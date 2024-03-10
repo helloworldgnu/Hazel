@@ -1,18 +1,17 @@
 #include "Application.h"
 
-namespace Hazel{
-    Application::Application() {
+#include "ApplicationEvent.h"
+#include "Log.h"
 
-    }
+namespace Hazel {
+Application::Application() {}
 
-    Application::~Application() {
+Application::~Application() {}
 
-    }
-
-    void Application::Run() {
-        while(true) {
-
-        }
-    }
-
+void Application::Run() {
+  WindowResi
+  while (true) {
+  }
 }
+
+} // namespace Hazel
