@@ -5,14 +5,10 @@
 #ifndef SANBOX_CORE_H
 #define SANBOX_CORE_H
 
-
-#ifdef HZ_PLATFORM_WINDOWS
-    #ifdef HZ_BUILD_DLL
-        #define HAZEL_API __declspec(dllexport)
-    #else
-        #define HAZEL_API __declspec(dllimport)
-    #endif
+#ifdef HZ_BUILD_DLL
+    #define HAZEL_API __declspec(dllexport)
 #else
-    #error Hazel only support Windows!
+    #define HAZEL_API __declspec(dllimport)
 #endif
+
 #endif //SANBOX_CORE_H
