@@ -1,12 +1,10 @@
 #ifndef SANBOX_MOUSEEVENT_H
-
 #define SANBOX_MOUSEEVENT_H
 
 #include "Event.h"
 #include "MouseCodes.h"
 
 namespace Hazel {
-
 class MouseMovedEvent : public Event {
 public:
   MouseMovedEvent(const float x, const float y) : m_MouseX(x), m_MouseY(y) {}
@@ -21,7 +19,7 @@ public:
   }
 
   EVENT_CLASS_TYPE(MouseMoved)
-  EVENT_CLASS_CATEGORY(EventCategoryMouse  | EventCategoryInput)
+  EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 
 private:
   float m_MouseX, m_MouseY;
@@ -41,7 +39,7 @@ public:
   }
 
   EVENT_CLASS_TYPE(MouseScrolled)
-  EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCagetoryInput)
+  EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 private:
   float m_XOffset, m_YOffset;
 };
@@ -82,7 +80,6 @@ public:
 
   EVENT_CLASS_TYPE(MouseButtonReleased)
 };
-
 } // namespace Hazel
 
 #endif // SANBOX_MOUSEEVENT_H
