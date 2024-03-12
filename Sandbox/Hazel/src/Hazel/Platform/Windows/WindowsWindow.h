@@ -10,9 +10,9 @@
 namespace Hazel {
 class WindowsWindow : public Window {
 public:
-  WindowsWindow(const WindowProps &props);
+  explicit WindowsWindow(const WindowProps &props);
 
-  virtual ~WindowsWindow();
+  ~WindowsWindow() override;
 
   void OnUpdate() override;
 
