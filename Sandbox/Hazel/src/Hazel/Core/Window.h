@@ -3,6 +3,8 @@
 
 #include "../Core.h"
 #include "Event.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 namespace Hazel {
 struct WindowProps {
@@ -27,6 +29,8 @@ public:
   virtual void SetEventCallback(const EventCallbackFn &callback) = 0;
   virtual void SetVSync(bool enabled) = 0;
   virtual bool IsVSync() const = 0;
+
+  virtual GLFWwindow* GetNativeWindow(){return nullptr;}
 
   static Window *Create(const WindowProps &props = WindowProps());
 };
