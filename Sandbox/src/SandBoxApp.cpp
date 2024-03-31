@@ -1,22 +1,30 @@
 #include <Hazel.h> 
 
+#include "imgui.h"
+
 class ExampleLayer : public Hazel::Layer {
 public:
-    using Hazel::Layer::Layer;
+  using Hazel::Layer::Layer;
 
   explicit ExampleLayer() : Hazel::Layer::Layer("Example") {
 
   }
 
-    ~ExampleLayer() override {
-        
-    }
+  ~ExampleLayer() override {
+      
+  }
 
   void OnUpdate() override{
     if (Hazel::Input::IsKeyPressed(HZ_KEY_TAB)) {
         HZ_TRACE("TAB key is pressed(poll)!");
     }
   }
+
+  virtual void OnImGuiRender() override {
+        ImGui::Begin("Test");
+        ImGui::Text("Hello world!");
+        ImGui::End();
+    }
 
   void OnEvent(Hazel::Event& event) override {
     if (event.GetEventType() == Hazel::EventType::KeyPressed) {
@@ -36,7 +44,6 @@ class Sandbox : public Hazel::Application {
 public:
     explicit Sandbox(){
     PushOverlay(new ExampleLayer());
-    PushOverlay(new Hazel::ImGuiLayer());
 }
 
 };
