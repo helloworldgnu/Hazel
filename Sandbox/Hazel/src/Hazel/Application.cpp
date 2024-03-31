@@ -9,7 +9,11 @@
 namespace Hazel {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
+Application* Application::s_Instance = nullptr;
+
 Application::Application() {
+  s_Instance = this;
+
   m_Window = std::unique_ptr<Window>(Window::Create());
 
   // 绑定类成员函数，需要传this
@@ -21,11 +25,13 @@ Application::Application() {
 Application::~Application() {}
 
 void Application::PushLayer(Layer *layer) {
-    m_LayerStack.PushLayer(layer);
+  m_LayerStack.PushLayer(layer);
+  layer->OnAttach();
 }
 
 void Application::PushOverlay(Layer *layer) {
     m_LayerStack.PushOverlay(layer);
+    layer->OnAttach();
 }
 
 void Application::OnEvent(Hazel::Event &e) {
@@ -42,16 +48,7 @@ void Application::OnEvent(Hazel::Event &e) {
 }
 
 bool Application::OnWindowClose(WindowCloseEvent &e) {
-    while(m_Running) {
-        glClearColor(0, 1, 0, 1);
-        glClear(GL_COLOR_BUFFER_BIT);
-        for (Layer* layer : m_LayerStack) {
-            layer->OnUpdate();
-        }
-        m_Window->OnUpdate();
-
-        m_Running = false;
-    }
+    m_Running = false;
     return true;
   }
 
@@ -68,6 +65,9 @@ void Application::Run() {
   while (m_Running) {
     glClearColor(0, 1, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
+    for (Layer* layer : m_LayerStack) {
+        layer->OnUpdate();
+    }
     m_Window->OnUpdate();
   }
 }

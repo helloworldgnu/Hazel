@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(Sandbox)
 
+# set(SRC_LIST Hazel/src/Hazel/Platform/OpenGL/main.cpp)
 set(SRC_LIST src/SandBoxApp.cpp)
 
 add_subdirectory(Hazel)

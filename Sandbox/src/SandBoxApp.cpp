@@ -17,7 +17,7 @@ public:
   }
 
   void OnEvent(Hazel::Event& event) override {
-      HZ_TRACE("ExampleLayer::OnEvent {0}", event.ToString());
+      HZ_TRACE("ExampleLayer::OnEvent {}", event.ToString());
   }
 
     void OnAttach() override {}
@@ -26,9 +26,10 @@ public:
   
 class Sandbox : public Hazel::Application {
 public:
-    Sandbox(){
-        PushOverlay(new ExampleLayer());
-    }
+    explicit Sandbox(){
+    PushOverlay(new ExampleLayer());
+    PushOverlay(new Hazel::ImGuiLayer());
+}
 
 };
 

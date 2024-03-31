@@ -4,6 +4,20 @@ set(CMAKE_CXX_STANDARD 14)
 find_package(OpenGL REQUIRED)
 
 project(hazel)
+
+file (GLOB SRC_LIST_IMGUI
+        vendor/imgui/*.h
+        vendor/imgui/*.cpp
+)
+
+set(SRC_LIST_IMGUI_BACKENDS
+        vendor/imgui/backends/imgui_impl_opengl3.h
+        vendor/imgui/backends/imgui_impl_opengl3.cpp
+        vendor/imgui/backends/imgui_impl_opengl3_loader.h
+        vendor/imgui/backends/imgui_impl_glfw.h
+        vendor/imgui/backends/imgui_impl_glfw.cpp
+)
+
 set(SRC_LIST src/Hazel/Application.cpp
         src/Hazel/Log.cpp
         src/Hazel/Platform/Windows/WindowsWindow.cpp
@@ -11,15 +25,20 @@ set(SRC_LIST src/Hazel/Application.cpp
         src/Hazel/Layer.h 
         src/Hazel/Layer.cpp
         src/Hazel/LayerStack.cpp 
-        src/Hazel/LayerStack.h)
+        src/Hazel/LayerStack.h
+        src/Hazel/ImGui/ImGuiLayer.cpp
+        src/Hazel/ImGui/ImGuiLayer.h)
 
-add_library(hazel STATIC ${SRC_LIST})
+add_library(hazel STATIC ${SRC_LIST} ${SRC_LIST_IMGUI} ${SRC_LIST_IMGUI_BACKENDS})
 add_subdirectory(vendor/GLFW)
 
 target_link_libraries(${PROJECT_NAME}  glfw)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
         vendor/spdlog/include
+        vendor/GLFW/include
+        vendor/imgui
+        vendor/imgui/backends
         src/
         src/Hazel
         src/Hazel/Core
