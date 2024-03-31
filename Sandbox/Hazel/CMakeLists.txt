@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 find_package(OpenGL REQUIRED)
 
@@ -27,7 +27,12 @@ set(SRC_LIST src/Hazel/Application.cpp
         src/Hazel/LayerStack.cpp 
         src/Hazel/LayerStack.h
         src/Hazel/ImGui/ImGuiLayer.cpp
-        src/Hazel/ImGui/ImGuiLayer.h)
+        src/Hazel/ImGui/ImGuiLayer.h
+        src/Hazel/Input.h
+        src/Hazel/Platform/Windows/WindowsInput.cpp
+        src/Hazel/Platform/Windows/WindowsInput.h
+        src/Hazel/KeyCodes.h
+        src/Hazel/MouseButtonCodes.h)
 
 add_library(hazel STATIC ${SRC_LIST} ${SRC_LIST_IMGUI} ${SRC_LIST_IMGUI_BACKENDS})
 add_subdirectory(vendor/GLFW)
