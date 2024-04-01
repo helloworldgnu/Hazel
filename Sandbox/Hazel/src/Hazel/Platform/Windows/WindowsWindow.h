@@ -4,8 +4,8 @@
 #include "Window.h"
 
 #include <glad/glad.h>
-
 #include <GLFW/glfw3.h>
+#include "Renderer/GraphicsContext.h"
 
 namespace Hazel {
 class WindowsWindow : public Window {
@@ -37,6 +37,7 @@ private:
 
 private:
   GLFWwindow *m_Window;
+  GraphicsContext *m_Context;
 
   struct WindowData {
     std::string Title;

@@ -6,6 +6,7 @@
 #include "KeyEvent.h"
 #include "Log.h"
 #include "MouseEvent.h"
+#include "Platform/OpenGL/OpenGLContext.h"
 
 // #include "Assert.h"
 namespace Hazel {
@@ -50,13 +51,11 @@ void WindowsWindow::Init(const WindowProps &props) {
 
   m_Window = glfwCreateWindow((int)props.Width, (int)props.Height,
                               m_Data.Title.c_str(), nullptr, nullptr);
-  glfwMakeContextCurrent(m_Window);
-  glfwSetWindowUserPointer(m_Window, &m_Data);
 
-  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-    HZ_CORE_INFO("Failed to initialize GLAD");
-    return;
-  }
+  m_Context = new OpenGLContext(m_Window);
+  m_Context->Init();
+
+  glfwSetWindowUserPointer(m_Window, &m_Data);
 
   SetVSync(true);
 
@@ -137,7 +136,8 @@ void WindowsWindow::Shutdown() { glfwDestroyWindow(m_Window); }
 
 void WindowsWindow::OnUpdate() {
   glfwPollEvents();
-  glfwSwapBuffers(m_Window);
+  m_Context->SwapBuffers();
+  // glfwSwapBuffers(m_Window);
 }
 
 void WindowsWindow::SetVSync(bool enabled) {

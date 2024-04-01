@@ -32,7 +32,10 @@ set(SRC_LIST src/Hazel/Application.cpp
         src/Hazel/Platform/Windows/WindowsInput.cpp
         src/Hazel/Platform/Windows/WindowsInput.h
         src/Hazel/KeyCodes.h
-        src/Hazel/MouseButtonCodes.h)
+        src/Hazel/MouseButtonCodes.h
+        src/Hazel/Renderer/GraphicsContext.h
+        src/Hazel/Platform/OpenGL/OpenGLContext.cpp
+        src/Hazel/Platform/OpenGL/OpenGLContext.h)
 
 add_library(hazel STATIC ${SRC_LIST} ${SRC_LIST_IMGUI} ${SRC_LIST_IMGUI_BACKENDS})
 add_subdirectory(vendor/GLFW)
