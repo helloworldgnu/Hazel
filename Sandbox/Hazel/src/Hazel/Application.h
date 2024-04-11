@@ -10,6 +10,7 @@
 #include "Layer.h"
 #include "LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
+#include "Renderer/Shader.h"
 
 namespace Hazel {
 class Application {
@@ -31,6 +32,8 @@ public:
   }
 
   bool OnWindowClose(WindowCloseEvent &e);
+
+  std::unique_ptr<Shader> m_Shader;
 
 private:
   std::unique_ptr<Window> m_Window;

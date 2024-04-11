@@ -35,7 +35,9 @@ set(SRC_LIST src/Hazel/Application.cpp
         src/Hazel/MouseButtonCodes.h
         src/Hazel/Renderer/GraphicsContext.h
         src/Hazel/Platform/OpenGL/OpenGLContext.cpp
-        src/Hazel/Platform/OpenGL/OpenGLContext.h)
+        src/Hazel/Platform/OpenGL/OpenGLContext.h
+        src/Hazel/Renderer/Shader.cpp
+        src/Hazel/Renderer/Shader.h)
 
 add_library(hazel STATIC ${SRC_LIST} ${SRC_LIST_IMGUI} ${SRC_LIST_IMGUI_BACKENDS})
 add_subdirectory(vendor/GLFW)
