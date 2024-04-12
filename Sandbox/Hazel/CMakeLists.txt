@@ -43,7 +43,11 @@ set(SRC_LIST src/Hazel/Application.cpp
         src/Hazel/Renderer/Buffer.cpp
         src/Hazel/Renderer/Buffer.h
         src/Hazel/Platform/OpenGL/OpenGLBuffer.cpp
-        src/Hazel/Platform/OpenGL/OpenGLBuffer.h)
+        src/Hazel/Platform/OpenGL/OpenGLBuffer.h
+        src/Hazel/Renderer/VertexArray.cpp
+        src/Hazel/Renderer/VertexArray.h
+        src/Hazel/Platform/OpenGL/OpenGLVertexArray.cpp
+        src/Hazel/Platform/OpenGL/OpenGLVertexArray.h)
 
 add_library(hazel STATIC ${SRC_LIST} ${SRC_LIST_IMGUI} ${SRC_LIST_IMGUI_BACKENDS})
 add_subdirectory(vendor/GLFW)
