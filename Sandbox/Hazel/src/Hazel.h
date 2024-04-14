@@ -26,6 +26,6 @@
 #include "OrthographicCameraController.h"
 
 // -----Entry Point-------
-#include "Hazel/EntryPoint.h"
+// #include "Hazel/EntryPoint.h"
 
 #endif //SANBOX_HAZEL_H
