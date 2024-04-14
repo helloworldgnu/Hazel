@@ -1,10 +1,10 @@
-#ifndef SANBOX_WINDOW_H
-#define SANBOX_WINDOW_H
+#pragma once
 
-#include "../Core.h"
-#include "Event.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#include "Core.h"
+#include "Event.h"
 
 namespace Hazel {
 struct WindowProps {
@@ -41,5 +41,3 @@ public:
 };
 
 } // namespace Hazel
-
-#endif // SANBOX_WINDOW_H
