@@ -3,12 +3,14 @@
 #include "RenderCommand.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Core.h"
+#include "Renderer2D.h"
 
 namespace Hazel {
     Renderer::SceneData* Renderer::s_SceneData = new Renderer::SceneData;
 
     void Renderer::Init() {
         RenderCommand::Init();
+        Renderer2D::Init();
     }
 
 	void Renderer::BeginScene(OrthographicCamera(& camera)) {

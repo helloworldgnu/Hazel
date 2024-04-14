@@ -72,7 +72,9 @@ set(SRC_LIST
         src/Hazel/Platform/OpenGL/OpenGLTexture.cpp
         src/Hazel/Platform/OpenGL/OpenGLTexture.h
         src/Hazel/OrthographicCameraController.cpp
-        src/Hazel/OrthographicCameraController.h)
+        src/Hazel/OrthographicCameraController.h
+        src/Hazel/Renderer/Renderer2D.cpp
+        src/Hazel/Renderer/Renderer2D.h)
 
 add_library(hazel STATIC ${SRC_LIST} ${SRC_LIST_IMGUI} ${SRC_LIST_IMGUI_BACKENDS} ${SRC_LIST_STB_IMAGE})
 add_subdirectory(vendor/GLFW)
