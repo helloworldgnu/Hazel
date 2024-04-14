@@ -23,4 +23,7 @@ namespace Hazel {
         RenderCommand::DrawIndexed(vertexArray);
     }
 
+    void Renderer::Init() {
+        RenderCommand::Init();
+    }
 }
