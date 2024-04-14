@@ -55,7 +55,8 @@ set(SRC_LIST src/Hazel/Application.cpp
         src/Hazel/Renderer/RenderCommand.cpp
         src/Hazel/Renderer/RenderCommand.h
         src/Hazel/Renderer/OrthographicCamera.cpp
-        src/Hazel/Renderer/OrthographicCamera.h)
+        src/Hazel/Renderer/OrthographicCamera.h
+        src/Hazel/Core/Timestep.h)
 
 add_library(hazel STATIC ${SRC_LIST} ${SRC_LIST_IMGUI} ${SRC_LIST_IMGUI_BACKENDS})
 add_subdirectory(vendor/GLFW)

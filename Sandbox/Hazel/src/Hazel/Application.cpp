@@ -6,6 +6,7 @@
 
 #include "ApplicationEvent.h"
 #include "Core/Base.h"
+#include "Core/Timestep.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/RenderCommand.h"
@@ -67,8 +68,12 @@ void Application::Run() {
   }
 
   while (m_Running) {
+    float time = glfwGetTime();
+    Timestep timestep = time - m_LastFrameTime;
+    m_LastFrameTime = time;
+
     for (Layer* layer : m_LayerStack) {
-        layer->OnUpdate();
+        layer->OnUpdate(timestep);
     }
 
     m_ImGuiLayer->Begin();
