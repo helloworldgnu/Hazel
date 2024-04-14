@@ -42,7 +42,7 @@ void Application::PushOverlay(Layer *layer) {
 void Application::OnEvent(Hazel::Event &e) {
   EventDispatcher dispatcher(e);
   dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-  HZ_CORE_TRACE("{}", e.ToString());
+  // HZ_CORE_TRACE("{}", e.ToString());
 
   for (auto it = m_LayerStack.end();  it != m_LayerStack.begin();) {
       (*--it)->OnEvent(e);
