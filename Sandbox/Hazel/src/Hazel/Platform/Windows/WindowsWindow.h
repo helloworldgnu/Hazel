@@ -31,6 +31,8 @@ public:
     return m_Window;
   }
 
+  void GetPixelSize(uint32_t& width, uint32_t& height) const override;
+
 private:
   virtual void Init(const WindowProps &props);
   virtual void Shutdown();

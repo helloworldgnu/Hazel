@@ -16,11 +16,12 @@ namespace Hazel {
                    const glm::mat4& transform = glm::mat4(1.0f));
 
 		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
+        static void OnWindowResize(uint32_t width, uint32_t height);
 
-        struct SceneDatta {
+        struct SceneData {
             glm::mat4 ViewProjectionMatrix;
         };
 
-        static SceneDatta* s_SceneData;
+        static SceneData* s_SceneData;
 	};
 }

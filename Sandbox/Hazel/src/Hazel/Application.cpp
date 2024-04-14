@@ -43,9 +43,10 @@ void Application::PushOverlay(Layer *layer) {
 }
 
 void Application::OnEvent(Hazel::Event &e) {
+  // HZ_CORE_TRACE("{}", e.ToString());
   EventDispatcher dispatcher(e);
   dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-  // HZ_CORE_TRACE("{}", e.ToString());
+  dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
 
   for (auto it = m_LayerStack.end();  it != m_LayerStack.begin();) {
       (*--it)->OnEvent(e);
@@ -56,27 +57,34 @@ void Application::OnEvent(Hazel::Event &e) {
 }
 
 bool Application::OnWindowClose(WindowCloseEvent &e) {
-    m_Running = false;
-    return true;
+  m_Running = false;
+  return true;
+}
+
+bool Application::OnWindowResize(Hazel::WindowResizeEvent &e) {
+  if (e.GetWidth() == 0 || e.GetHeight() == 0) {
+    m_Minimized = true;
+    return false;
   }
+  m_Minimized = false;
+
+  uint32_t pixelWidth = e.GetWidth(), pixelHeight = e.GetHeight();
+  m_Window->GetPixelSize(pixelWidth, pixelHeight);
+  HZ_INFO("width = {0}, height = {1}, pixelWidth = {2}, pixelHeight = {3}", e.GetWidth(), e.GetHeight(), pixelWidth, pixelHeight);
+  Renderer::OnWindowResize(pixelWidth, pixelHeight);
+  return false;
+}
 
 void Application::Run() {
-  WindowResizeEvent e(1200, 720);
-  if (e.IsInCategory(EventCategoryApplication)) {
-    HZ_TRACE(e.ToString());
-  }
-
-  if (e.IsInCategory(EventCategoryInput)) {
-    HZ_TRACE(e.ToString());
-  }
-
   while (m_Running) {
     float time = glfwGetTime();
     Timestep timestep = time - m_LastFrameTime;
     m_LastFrameTime = time;
 
-    for (Layer* layer : m_LayerStack) {
-        layer->OnUpdate(timestep);
+    if (!m_Minimized) {
+      for (Layer* layer : m_LayerStack) {
+          layer->OnUpdate(timestep);
+      }
     }
 
     m_ImGuiLayer->Begin();

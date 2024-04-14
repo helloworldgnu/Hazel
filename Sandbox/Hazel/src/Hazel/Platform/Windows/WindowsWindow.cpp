@@ -150,4 +150,9 @@ void WindowsWindow::SetVSync(bool enabled) {
 }
 
 bool WindowsWindow::IsVSync() const { return m_Data.VSync; }
+
+void WindowsWindow::GetPixelSize(uint32_t& width, uint32_t& height) const {
+    glfwGetFramebufferSize(m_Window, reinterpret_cast<int *>(&width), reinterpret_cast<int *>(&height));
+}
+
 } // namespace Hazel

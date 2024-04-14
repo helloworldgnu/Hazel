@@ -32,6 +32,11 @@ public:
 
   virtual GLFWwindow* GetNativeWindow(){return nullptr;}
 
+  virtual void GetPixelSize(uint32_t& width, uint32_t& height) const {
+    width = GetWidth();
+    height = GetHeight();
+  };
+
   static Window *Create(const WindowProps &props = WindowProps());
 };
 
