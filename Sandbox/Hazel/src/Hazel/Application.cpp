@@ -18,7 +18,7 @@ Application* Application::s_Instance = nullptr;
 
 Application::Application() {
   s_Instance = this;
-  m_Window = std::unique_ptr<Window>(Window::Create());
+  m_Window = Scope<Window>(Window::Create());
   // 绑定类成员函数，需要传this
 //        Window::EventCallbackFn fn = std::bind(&Application::OnEvent, this, std::placeholders::_1);
 //        m_Window->SetEventCallback(fn);

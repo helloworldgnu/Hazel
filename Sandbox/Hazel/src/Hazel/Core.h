@@ -1,9 +1,6 @@
-//
-// Created by baidu on 2023/9/2.
-//
+#pragma once
 
-#ifndef SANBOX_CORE_H
-#define SANBOX_CORE_H
+#include <memory>
 
 #ifdef HZ_BUILD_DLL
     #define HAZEL_API __declspec(dllexport)
@@ -11,4 +8,10 @@
     #define HAZEL_API __declspec(dllimport)
 #endif
 
-#endif //SANBOX_CORE_H
+namespace Hazel {
+    template<typename T>
+    using Scope = std::unique_ptr<T>;
+
+    template<typename T>
+    using Ref = std::shared_ptr<T>;
+}

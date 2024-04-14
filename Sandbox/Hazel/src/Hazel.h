@@ -20,6 +20,8 @@
 #include <Renderer/Shader.h>
 #include <Renderer/VertexArray.h>
 #include <Hazel/Core/Timestep.h>
+#include "Platform/OpenGL/OpenGLShader.h"
+#include "Hazel/Core.h"
 
 // -----Entry Point-------
 #include "Hazel/EntryPoint.h"
