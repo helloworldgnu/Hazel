@@ -7,6 +7,7 @@
 namespace Hazel {
     class OpenGLVertexBuffer : public VertexBuffer {
     public:
+        OpenGLVertexBuffer(uint32_t size);
         OpenGLVertexBuffer(float* vertices, uint32_t size);
         virtual ~OpenGLVertexBuffer();
 
@@ -20,6 +21,9 @@ namespace Hazel {
         void SetLayout(const BufferLayout &layout) override {
             m_Layout = layout;
         };
+
+        // 支持动态的设置顶点数据
+        virtual void SetData(const void* data, uint32_t size) override;
 
     private:
         uint32_t m_RendererID;
