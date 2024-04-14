@@ -22,6 +22,7 @@
 #include <Hazel/Core/Timestep.h>
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Hazel/Core.h"
+#include <Renderer/Texture.h>
 
 // -----Entry Point-------
 #include "Hazel/EntryPoint.h"
