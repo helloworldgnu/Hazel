@@ -11,8 +11,11 @@ namespace Hazel {
     public:
         // 支持参数为文件路径的构造函数
         OpenGLShader(const std::string& filePath);
-        OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc);
+        OpenGLShader(const std::string name, const std::string& vertexSrc, const std::string& fragmentSrc);
         ~OpenGLShader();
+
+        const std::string &GetName() const override;
+        
         void Bind() const override;
         void Unbind() const override;
 
@@ -36,5 +39,6 @@ namespace Hazel {
 
     private:
         uint32_t m_RendererID;
+        std::string m_Name;
     };
 }
