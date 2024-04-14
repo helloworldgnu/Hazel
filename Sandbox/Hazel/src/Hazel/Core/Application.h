@@ -16,12 +16,13 @@
 #include "Renderer/OrthographicCamera.h"
 #include "Core.h"
 
+int main(int argc, char** argv);
+
 namespace Hazel {
 class Application {
 public:
   Application();
   virtual ~Application();
-  void Run();
 
   void OnEvent(Event &e);
 
@@ -35,6 +36,8 @@ public:
       return *s_Instance;
   }
 
+private:
+  void Run();
   bool OnWindowClose(WindowCloseEvent &e);
   bool OnWindowResize(WindowResizeEvent& e);
 
@@ -49,7 +52,9 @@ private:
   // 声明shader id
   unsigned int shaderProgram;
 
+private:
   static Application* s_Instance;
+  friend int ::main(int argc, char** argv);
 };
 
 Application *CreateApplication();
