@@ -8,6 +8,8 @@
 #include <glm/ext/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale
 #include <glm/ext/matrix_clip_space.hpp> // glm::perspective
 #include <glm/ext/scalar_constants.hpp> // glm::pi
+#include "glm/gtc/type_ptr.hpp"
+#include "Platform/OpenGL/OpenGLShader.h"
 
 glm::mat4 camera(float Translate, glm::vec2 const& Rotate)
 {
@@ -73,7 +75,7 @@ public:
 
             uniform mat4 u_ViewProjection;
             uniform mat4 u_Transform;
-            
+
             out vec3 v_Position;
             out vec4 v_Color;
             void main()
@@ -96,7 +98,7 @@ public:
             }
         )";
 
-        m_Shader = std::make_shared<Hazel::Shader>(vertexSrc, fragmentSrc);
+        m_Shader.reset(Hazel::Shader::Create(vertexSrc, fragmentSrc));
 
         std::string blueShaderVertexSrc = R"(
             #version 330 core
@@ -121,7 +123,7 @@ public:
             }
         )";
 
-        m_BlueShader = std::make_shared<Hazel::Shader>(blueShaderVertexSrc, blueShaderFragmentSrc);
+        m_BlueShader.reset(Hazel::Shader::Create(blueShaderVertexSrc, blueShaderFragmentSrc));
   }
 
   ~ExampleLayer() override {

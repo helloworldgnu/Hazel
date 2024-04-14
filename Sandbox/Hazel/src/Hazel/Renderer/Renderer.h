@@ -20,6 +20,6 @@ namespace Hazel {
             glm::mat4 ViewProjectionMatrix;
         };
 
-        static SceneDatta* m_SceneData;
+        static SceneDatta* s_SceneData;
 	};
 }
