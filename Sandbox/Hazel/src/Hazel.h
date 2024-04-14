@@ -23,6 +23,7 @@
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Hazel/Core.h"
 #include <Renderer/Texture.h>
+#include "OrthographicCameraController.h"
 
 // -----Entry Point-------
 #include "Hazel/EntryPoint.h"

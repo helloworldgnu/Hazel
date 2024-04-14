@@ -10,22 +10,11 @@
 #include <glm/ext/scalar_constants.hpp> // glm::pi
 #include "glm/gtc/type_ptr.hpp"
 
-glm::mat4 camera(float Translate, glm::vec2 const& Rotate)
-{
-    glm::mat4 Projection = glm::perspective(glm::pi<float>() * 0.25f, 4.0f / 3.0f, 0.1f, 100.f);
-    glm::mat4 View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -Translate));
-    View = glm::rotate(View, Rotate.y, glm::vec3(-1.0f, 0.0f, 0.0f));
-    View = glm::rotate(View, Rotate.x, glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::mat4 Model = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
-    return Projection * View * Model;
-}
-
 class ExampleLayer : public Hazel::Layer {
 public:
   using Hazel::Layer::Layer;
 
-  explicit ExampleLayer() : Hazel::Layer::Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f) {
-    auto cam = camera(1.0, glm::vec2());
+  explicit ExampleLayer() : Hazel::Layer::Layer("Example"), m_CameraController(1280.0f / 720.0f) {
 
     //-----------------三角形----------------------
     m_VertexArray.reset(Hazel::VertexArray::Create());
@@ -140,51 +129,32 @@ public:
   }
 
   void OnUpdate(Hazel::Timestep ts) override {
-    if (Hazel::Input::IsKeyPressed(HZ_KEY_LEFT))
-        m_CameraPosition.x -= m_CameraMoveSpeed * ts;
-    else if (Hazel::Input::IsKeyPressed(HZ_KEY_RIGHT))
-        m_CameraPosition.x += m_CameraMoveSpeed * ts;
+    // Update
+    m_CameraController.OnUpdate(ts);
 
-    if (Hazel::Input::IsKeyPressed(HZ_KEY_UP))
-        m_CameraPosition.y += m_CameraMoveSpeed * ts;
-    else if (Hazel::Input::IsKeyPressed(HZ_KEY_DOWN))
-        m_CameraPosition.y -= m_CameraMoveSpeed * ts;
-
-    if (Hazel::Input::IsKeyPressed(HZ_KEY_A))
-        m_CameraRotation += m_CameraRotationSpeed * ts;
-    if (Hazel::Input::IsKeyPressed(HZ_KEY_D))
-        m_CameraRotation -= m_CameraRotationSpeed * ts;
-
+    // Render
     Hazel::RenderCommand::SetClearColor({0.45f, 0.55f, 0.60f, 1.00f});
     Hazel::RenderCommand::Clear();
 
-    HZ_TRACE("Timestep: {}", ts.GetMilliseconds());
-    HZ_TRACE("position: {},{}", m_CameraPosition.x, m_CameraPosition.y);
-    HZ_TRACE("rotation: {}", m_CameraRotation);
-    m_Camera.SetPosition(m_CameraPosition);
-    m_Camera.SetRotation(m_CameraRotation);
-
-    Hazel::Renderer::BeginScene(m_Camera);
+    Hazel::Renderer::BeginScene(m_CameraController.GetCamera());
 
     static glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
     std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_FlatColorShader)->Bind();
     std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat3("u_Color", m_SquareColor);
-    for (int y = 0; y < 20; y++) {
-        for (int x = 0; x < 20; x++) {
+    for (int y = 0; y < 10; y++) {
+        for (int x = 0; x < 10; x++) {
             glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
             glm::mat4 transfrom = glm::translate(glm::mat4(1.0f), pos) * scale;
             Hazel::Renderer::Submit(m_FlatColorShader, m_SquareVA, transfrom);
         }
     }
-
     auto textureShader = m_ShaderLibrary.Get("Texture");
-    
     m_Texture->Bind();
     Hazel::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
-
     m_ChernoLogo->Bind();
     Hazel::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
-
+    // Triangle
+    // Hazel::Renderer::Submit(m_Shader, m_VertexArray);
     Hazel::Renderer::EndScene();
   }
 
@@ -194,7 +164,8 @@ public:
     ImGui::End();
   }
 
-  void OnEvent(Hazel::Event& event) override {
+  void OnEvent(Hazel::Event& e) override {
+    m_CameraController.OnEvent(e);
   }
 
     void OnAttach() override {}
@@ -208,14 +179,7 @@ private:
     Hazel::Ref<Hazel::VertexArray> m_SquareVA;
     Hazel::Ref<Hazel::Texture2D> m_Texture, m_ChernoLogo;
 
-    Hazel::OrthographicCamera m_Camera;
-
-    glm::vec3 m_CameraPosition{};
-    float m_CameraRotation = 0.0f;
-
-    float m_CameraMoveSpeed = 5.f;
-    float m_CameraRotationSpeed = 180.0f;
-
+    Hazel::OrthographicCameraController m_CameraController;
     glm::vec3 m_SquareColor = {0.2f, 0.3f, 0.8f};
 }; 
   
