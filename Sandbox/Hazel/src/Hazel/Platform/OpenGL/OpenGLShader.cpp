@@ -168,6 +168,10 @@ namespace Hazel{
         UploadUniformFloat4(name, value);
     }
 
+    void OpenGLShader::SetInt(const std::string &name, const int value) {
+        UploadUniformInt(name, value);
+    }
+
     void OpenGLShader::Bind() const {
         glUseProgram(m_RendererID);
     }
