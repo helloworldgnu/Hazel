@@ -18,7 +18,7 @@ class ExampleLayer : public Hazel::Layer {
 public:
   using Hazel::Layer::Layer;
 
-  explicit ExampleLayer() : Hazel::Layer::Layer("Example"), m_CameraController(1280.0f / 720.0f, TRUNCATE_EXISTING) {
+  explicit ExampleLayer() : Hazel::Layer::Layer("Example"), m_CameraController(1280.0f / 720.0f, true) {
 
     //-----------------三角形----------------------
     m_VertexArray = Hazel::VertexArray::Create();
