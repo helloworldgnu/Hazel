@@ -5,6 +5,7 @@
 #include "ImGuiLayer.h"
 #include "Application.h"
 #include "Log.h"
+#include "Debugger/Instrumentor.h"
 
 namespace Hazel {
     ImGuiLayer::~ImGuiLayer() {
@@ -12,6 +13,8 @@ namespace Hazel {
     }
     // 初始化ImGui
     void ImGuiLayer::OnAttach() {
+        HZ_PROFILE_FUNCTION();
+
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGui::StyleColorsDark();
@@ -34,15 +37,20 @@ namespace Hazel {
     }
 
     void ImGuiLayer::OnDetach() {
+        HZ_PROFILE_FUNCTION();
     }
   
     void ImGuiLayer::Begin() {
+        HZ_PROFILE_FUNCTION();
+
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
     }
 
     void ImGuiLayer::End() {
+        HZ_PROFILE_FUNCTION();
+        
         ImGuiIO& io = ImGui::GetIO();
         Application& app = Application::Get();
         io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());

@@ -6,6 +6,7 @@
 #include "Shader.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "RenderCommand.h"
+#include "Debugger/Instrumentor.h"
 
 namespace Hazel {
     struct Renderer2DStorage{
@@ -17,6 +18,8 @@ namespace Hazel {
     static Renderer2DStorage* s_Data;
 
     void Renderer2D::Init() {
+        HZ_PROFILE_FUNCTION();
+
         s_Data = new Renderer2DStorage();
         s_Data->QuadVertexArray = Hazel::VertexArray::Create();
         float squareVertices[5 * 4] = {
@@ -49,16 +52,20 @@ namespace Hazel {
     }
 
     void Renderer2D::Shutdown() {
+        HZ_PROFILE_FUNCTION();
+
         delete s_Data;
     }
 
     void Renderer2D::BeginScene(const OrthographicCamera &camera) {
+        HZ_PROFILE_FUNCTION();
+
         s_Data->TextureShader->Bind();
         s_Data->TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
     }
 
     void Renderer2D::EndScene() {
-
+        HZ_PROFILE_FUNCTION();
     }
 
     void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color) {
@@ -66,6 +73,8 @@ namespace Hazel {
     }
 
     void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color) {
+        HZ_PROFILE_FUNCTION();
+
         s_Data->TextureShader->SetFloat4("u_Color", color);
         s_Data->WhiteTexture->Bind();
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0), {size.x, size.y, 1.0f});
@@ -79,6 +88,8 @@ namespace Hazel {
     }
 
     void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture) {
+        HZ_PROFILE_FUNCTION();
+        
         s_Data->TextureShader->Bind();
         s_Data->TextureShader->SetFloat4("u_Color", glm::vec4(1.0f));
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0), {size.x, size.y, 1.0f});

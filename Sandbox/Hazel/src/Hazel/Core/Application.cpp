@@ -10,6 +10,7 @@
 #include "Renderer/Shader.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/RenderCommand.h"
+#include "Debugger/Instrumentor.h"
 
 namespace Hazel {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -17,6 +18,9 @@ namespace Hazel {
 Application* Application::s_Instance = nullptr;
 
 Application::Application() {
+  HZ_PROFILE_FUNCTION();
+  HZ_CORE_ASSERT(!s_Instance, "Application already exists!");
+
   s_Instance = this;
   m_Window = Scope<Window>(Window::Create());
   // 绑定类成员函数，需要传this
@@ -30,9 +34,14 @@ Application::Application() {
   PushOverlay(m_ImGuiLayer);
 }
 
-Application::~Application() {}
+Application::~Application() {
+  HZ_PROFILE_FUNCTION();
+  Renderer::Shutdown();
+}
 
 void Application::PushLayer(Layer *layer) {
+  HZ_PROFILE_FUNCTION();
+
   m_LayerStack.PushLayer(layer);
   layer->OnAttach();
 }
@@ -43,7 +52,7 @@ void Application::PushOverlay(Layer *layer) {
 }
 
 void Application::OnEvent(Hazel::Event &e) {
-  // HZ_CORE_TRACE("{}", e.ToString());
+  HZ_PROFILE_FUNCTION();
   EventDispatcher dispatcher(e);
   dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
   dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
@@ -62,6 +71,7 @@ bool Application::OnWindowClose(WindowCloseEvent &e) {
 }
 
 bool Application::OnWindowResize(Hazel::WindowResizeEvent &e) {
+  HZ_PROFILE_FUNCTION();
   if (e.GetWidth() == 0 || e.GetHeight() == 0) {
     m_Minimized = true;
     return false;
@@ -76,22 +86,30 @@ bool Application::OnWindowResize(Hazel::WindowResizeEvent &e) {
 }
 
 void Application::Run() {
+  HZ_PROFILE_FUNCTION();
   while (m_Running) {
+    HZ_PROFILE_SCOPE("RunLoop");
     float time = glfwGetTime();
     Timestep timestep = time - m_LastFrameTime;
     m_LastFrameTime = time;
 
     if (!m_Minimized) {
-      for (Layer* layer : m_LayerStack) {
-          layer->OnUpdate(timestep);
+      {
+          HZ_PROFILE_SCOPE("LayerStack OnUpdate");
+          for (Layer *layer: m_LayerStack) {
+              layer->OnUpdate(timestep);
+          }
       }
-    }
 
-    m_ImGuiLayer->Begin();
-    for(Layer* layer : m_LayerStack) {
-        layer->OnImGuiRender();
+      m_ImGuiLayer->Begin();
+      {
+            HZ_PROFILE_SCOPE("LayerStack OnImGuiRender");
+            for (Layer *layer: m_LayerStack) {
+                layer->OnImGuiRender();
+            }
+      }
+      m_ImGuiLayer->End();
     }
-    m_ImGuiLayer->End();
 
     m_Window->OnUpdate();
   }

@@ -3,9 +3,12 @@
 //
 
 #include "OpenGLContext.h"
-#include "Core/Base.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#include "Core/Base.h"
+#include "Debugger/Instrumentor.h"
 
 const char *vertexShaderSource = "#version 330 core\n"
                                  "layout (location = 0) in vec3 aPos;\n"
@@ -26,6 +29,8 @@ namespace Hazel {
     }
 
     void OpenGLContext::Init() {
+        HZ_PROFILE_FUNCTION();
+
         glfwMakeContextCurrent(m_WindowHandle);
         int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         HZ_CORE_ASSERT(status, "Failed to initialize Glad!");
@@ -37,6 +42,8 @@ namespace Hazel {
     }
 
     void OpenGLContext::SwapBuffers() {
+        HZ_PROFILE_FUNCTION();
+        
         glfwSwapBuffers(m_WindowHandle);
     }
 }

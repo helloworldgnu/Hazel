@@ -27,7 +27,7 @@ public:
   void SetVSync(bool enabled) override;
   bool IsVSync() const override;
 
-  GLFWwindow* GetNativeWindow() {
+  GLFWwindow* GetNativeWindow() override {
     return m_Window;
   }
 

@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Platform/OpenGL/OpenGLShader.h"
+#include "Debugger/Instrumentor.h"
 
 template<typename Fn>
 class Timer
@@ -48,25 +49,29 @@ Renderer2D::Renderer2D() : Layer("Renderer2D"), m_CameraController(1280.0f / 720
 }
 
 void Renderer2D::OnAttach() {
+	HZ_PROFILE_FUNCTION();
+
     m_CheckerboardTexture = Hazel::Texture2D::Create("../assets/textures/Checkerboard.png");
 }
 
 void Renderer2D::OnDetach() {
+	HZ_PROFILE_FUNCTION();
 }
 
 void Renderer2D::OnUpdate(Hazel::Timestep ts) {
-	{
-		PROFILE_SCOPE("Sandbox2D::OnUpdate");
-		// Update
-		m_CameraController.OnUpdate(ts);
-	}
+	HZ_PROFILE_FUNCTION();
+
+	m_CameraController.OnUpdate(ts);
     
 	{
-		PROFILE_SCOPE("Renderer Draw");
+		HZ_PROFILE_SCOPE("Renderer Prep");
 		// Render
 		Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Hazel::RenderCommand::Clear();
+	}
 
+	{
+		HZ_PROFILE_SCOPE("Renderer Draw");
 		Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
 	
 		Hazel::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
@@ -77,17 +82,10 @@ void Renderer2D::OnUpdate(Hazel::Timestep ts) {
 }
 
 void Renderer2D::OnImGuiRender() {
+	HZ_PROFILE_FUNCTION();
+
     ImGui::Begin("Settings");
     ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
-
-    for (auto& result : m_ProfileResults) {
-        char label[50];
-        strcpy(label, "%.3fms ");
-        strcat(label, result.Name);
-        ImGui::Text(label, result.Time);
-    }
-
-    m_ProfileResults.clear();
 
     ImGui::End();
 }
