@@ -18,9 +18,9 @@ namespace Hazel {
     };
 
     struct Renderer2DData{
-        const uint32_t MaxQuads = 10000;
-        const uint32_t MaxVertices = MaxQuads * 4;
-        const uint32_t MaxIndices = MaxQuads * 6;
+        static const uint32_t MaxQuads = 10000;
+        static const uint32_t MaxVertices = MaxQuads * 4;
+        static const uint32_t MaxIndices = MaxQuads * 6;
         // 纹理最大值取决于GPU，至少有8个，我的mac笔记本上是16个
         static const uint32_t MaxTexturesSlots = 16; // TODO:RenderCaps
         Ref<VertexArray> QuadVertexArray;
@@ -35,6 +35,8 @@ namespace Hazel {
         uint32_t TextureSlotIndex = 1; // 0 = white texture
 
         glm::vec4 QuadVertexPositions[4]; // 矩形的四个顶点
+
+        Renderer2D::Statistics Stats;
     };
 
     static Renderer2DData* s_Data;
@@ -47,14 +49,14 @@ namespace Hazel {
         s_Data->QuadVertexBuffer = VertexBuffer::Create(s_Data->MaxVertices * sizeof(QuadVertex));
         // 设置顶点数据的布局属性，按照position、color、texCoord的顺序排列
         s_Data->QuadVertexBuffer->SetLayout(
-                {
-                        {ShaderDataType::Float3, "a_Position"},
-                        {ShaderDataType::Float4, "a_Color"},
-                        {ShaderDataType::Float2, "a_TexCoord"},
-                        {ShaderDataType::Float, "a_TexIndex"},
-                        {ShaderDataType::Float, "a_TilingFactor"},
-                }
-                );
+            {
+                {ShaderDataType::Float3, "a_Position"},
+                {ShaderDataType::Float4, "a_Color"},
+                {ShaderDataType::Float2, "a_TexCoord"},
+                {ShaderDataType::Float, "a_TexIndex"},
+                {ShaderDataType::Float, "a_TilingFactor"},
+            }
+        );
         // 顶点缓冲绑定到顶点数组中，s_Data->QuadVertexBuffer在GPU内存中，现在只有内存占用无数据
         s_Data->QuadVertexArray->AddVertexBuffer(s_Data->QuadVertexBuffer);
         // 创建CPU空间的顶点数据，也是按照最大预设置来创建
@@ -137,6 +139,16 @@ namespace Hazel {
             s_Data->TextureSlots[i]->Bind(i);
         }
         RenderCommand::DrawIndexed(s_Data->QuadVertexArray, s_Data->QuadIndexCount);
+        s_Data->Stats.DrawCalls++;
+    }
+
+    void Renderer2D::FlushAndReset() {
+        EndScene();
+
+        s_Data->QuadIndexCount = 0;
+        s_Data->QuadVertexBufferPtr = s_Data->QuadVertexBufferBase;
+
+        s_Data->TextureSlotIndex = 1;
     }
 
     void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color) {
@@ -146,6 +158,11 @@ namespace Hazel {
     // 每个矩形对应4个顶点，即每绘制一个矩形，要添加4个顶点到s_Data中，用s_Data->QuadVertexBufferPtr标记end的地址
     void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color) {
         HZ_PROFILE_FUNCTION();
+
+        if (s_Data->QuadIndexCount >= Renderer2DData::MaxIndices) {
+            FlushAndReset();
+        }
+
         const float texIndex = 0.0f; // white Texture
         const float tilingFactor = 1.0f;
 
@@ -187,6 +204,11 @@ namespace Hazel {
 
     void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const Ref<Texture2D> &texture, float tilingFactor, const glm::vec4& tintColor) {
         HZ_PROFILE_FUNCTION();
+
+        if (s_Data->QuadIndexCount >= Renderer2DData::MaxIndices) {
+            FlushAndReset();
+        }
+
         constexpr glm::vec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
         float texIndex = 0.0f;
         for (uint32_t i = 1; i < s_Data->TextureSlotIndex; ++i) {
@@ -230,7 +252,11 @@ namespace Hazel {
         s_Data->QuadVertexBufferPtr->TexIndex = texIndex;
         s_Data->QuadVertexBufferPtr->TilingFactor = tilingFactor;
         s_Data->QuadVertexBufferPtr++;
+
         s_Data->QuadIndexCount += 6;
+
+        s_Data->Stats.QuadCount++;
+
 #if OLD_PATH
         s_Data->TextureShader->Bind();
         s_Data->TextureShader->SetFloat4("u_Color", glm::vec4(1.0f));
@@ -251,6 +277,11 @@ namespace Hazel {
     void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, float rotation,
                                      const glm::vec4 &color) {
         HZ_PROFILE_FUNCTION();
+
+        if (s_Data->QuadIndexCount >= Renderer2DData::MaxIndices) {
+            FlushAndReset();
+        }
+
         const float texIndex = 0.0f; // white Texture
         const float tilingFactor = 1.0f;
 
@@ -292,6 +323,8 @@ namespace Hazel {
         s_Data->QuadVertexBufferPtr++;
 
         s_Data->QuadIndexCount += 6;
+
+        s_Data->Stats.QuadCount++;
     }
 
     void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, float rotation,
@@ -302,6 +335,10 @@ namespace Hazel {
     void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, float rotation,
                                      const Ref<Texture2D> &texture, float tilingFactor, const glm::vec4 &tintColor) {
         HZ_PROFILE_FUNCTION();
+
+        if (s_Data->QuadIndexCount >= Renderer2DData::MaxIndices) {
+            FlushAndReset();
+        }
 
         constexpr glm::vec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
 
@@ -355,6 +392,15 @@ namespace Hazel {
         s_Data->QuadVertexBufferPtr++;
 
         s_Data->QuadIndexCount += 6;
+
+        s_Data->Stats.QuadCount++;
     }
 
+    void Renderer2D::ResetStats() {
+        memset(&s_Data->Stats, 0, sizeof(Statistics));
+    }
+
+    Renderer2D::Statistics Renderer2D::GetStats() {
+        return s_Data->Stats;
+    }
 }
